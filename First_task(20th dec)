@@ -1,0 +1,21 @@
+//Call get Api to get the output (without db Connection)
+//main.go
+package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+func main() {
+	http.HandleFunc("/greet", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "Hello World!!")
+	})
+	http.ListenAndServe("localhost:8000", nil)
+}
+
+
+
+//in terminal(command + ~) "go run main.go" 
+//@zsh run "curl http://localhost:8000/greet"
+//open postman and copy the link "http://localhost:8000/greet" and paste "GET"
