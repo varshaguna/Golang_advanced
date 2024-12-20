@@ -1,0 +1,62 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
+
+type Customer struct {
+	Name  string `json:"name"`
+	City  string `json:"city"`
+	Email string `json:"mail_id"`
+}
+
+func main() {
+
+	http.HandleFunc("/display", Display)
+	http.HandleFunc("/Details", details)
+
+	http.ListenAndServe("localhost:8000", nil)
+
+}
+func Display(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "This is the Output")
+}
+
+func details(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		var customers []Customer
+
+		decoder := json.NewDecoder(r.Body) 
+		err := decoder.Decode(&customers)
+		if err != nil {
+			http.Error(w, "Invalid JSON format", http.StatusBadRequest)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+
+		json.NewEncoder(w).Encode(customers)
+	} else {
+
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+
+	}
+}
+
+
+
+//in postman use POST method
+//[
+  {
+    "name": "varsha",
+    "city": "coimbatore",
+    "mail_id": "alice@example.com"
+  },
+  {
+    "name": "Bob",
+    "city": "London",
+    "mail_id": "bob@example.com"
+  }
+]
